@@ -13,11 +13,13 @@ const current1 = document.getElementById('current--1');
 const newGame = document.querySelector('.btn--new');
 const roll = document.querySelector('.btn--roll');
 const hold = document.querySelector('.btn--hold');
+const mode = document.querySelector('.btn--mode');
 // Dice Image
 const img = document.querySelector('.dice');
 
 // Player turn
 let turn = true;
+let twoPLayer = false;
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -71,19 +73,23 @@ const rollBtn = function () {
     } else {
       turn = false;
       current0.textContent = 0;
-      setTimeout(ai, 1000);
+      if (!twoPLayer) {
+        setTimeout(ai, 1000);
+      }
     }
   } else {
-    setTimeout(ai, 1000);
-
-    //   let luck = Math.floor(Math.random() * 6) + 1;
-    //   img.setAttribute('src', `dice-${luck}.png`);
-    //   if (luck != 1) {
-    //     current1.textContent = Number(current1.textContent) + luck;
-    //   } else {
-    //     turn = true;
-    //     current1.textContent = 0;
-    //   }
+    if (!twoPLayer) {
+      setTimeout(ai, 1000);
+    } else {
+      let luck = Math.floor(Math.random() * 6) + 1;
+      img.setAttribute('src', `dice-${luck}.png`);
+      if (luck != 1) {
+        current1.textContent = Number(current1.textContent) + luck;
+      } else {
+        turn = true;
+        current1.textContent = 0;
+      }
+    }
   }
 };
 
@@ -113,7 +119,9 @@ const holdBtn = function () {
       score0.textContent = total;
       current0.textContent = 0;
       turn = false;
-      setTimeout(ai, 1000);
+      if (!twoPLayer) {
+        setTimeout(ai, 1000);
+      }
     }
   } else {
     let total = Number(score1.textContent) + Number(current1.textContent);
@@ -131,3 +139,21 @@ const holdBtn = function () {
 
 hold.addEventListener('click', holdBtn);
 roll.addEventListener('click', rollBtn);
+
+mode.addEventListener('click', function () {
+  const name = document.getElementById('name--1');
+  score0.textContent = 0;
+  score1.textContent = 0;
+  current0.textContent = 0;
+  current1.textContent = 0;
+
+  if (twoPLayer != true) {
+    name.textContent = 'Player 2';
+    mode.textContent = '🔄Player 2';
+    twoPLayer = true;
+  } else {
+    twoPLayer = false;
+    name.textContent = 'VS AI';
+    mode.textContent = '🔄VS AI';
+  }
+});
